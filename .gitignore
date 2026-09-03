@@ -1,0 +1,7 @@
+.scala-build/
+.bsp/
+*.class
+drafts/*.docx
+drafts/*.pdf
+out/
+src/.scala-build/

@@ -1,0 +1,50 @@
+[
+ {
+  "id": "patrol",
+  "name": "Patrol boat",
+  "tons": 100,
+  "cost": 10,
+  "rate": 1,
+  "note": "Attack class, 1967; Australia built twenty of these itself."
+ },
+ {
+  "id": "destroyer",
+  "name": "Destroyer (Hobart)",
+  "tons": 3600,
+  "cost": 120,
+  "rate": 8,
+  "note": "Bought from Defoe, Michigan; three of them."
+ },
+ {
+  "id": "cruiser",
+  "name": "Light cruiser (Omaha)",
+  "tons": 7050,
+  "cost": 900,
+  "rate": 40,
+  "note": "Never built one after 1945."
+ },
+ {
+  "id": "carrier-light",
+  "name": "Light carrier (Melbourne)",
+  "tons": 20000,
+  "cost": 6000,
+  "rate": 200,
+  "note": "Ex-HMS Majestic, 1955; sank two friendly destroyers in collisions; retired 1982."
+ },
+ {
+  "id": "battleship",
+  "name": "Battleship (Missouri)",
+  "tons": 45000,
+  "cost": 40000,
+  "rate": 900,
+  "note": "Nobody has built one since 1944, and the game will not stop you."
+ },
+ {
+  "id": "supercarrier",
+  "name": "Supercarrier (Constellation)",
+  "tons": 61000,
+  "cost": 250000,
+  "rate": 5000,
+  "note": "Two hundred and fifty thousand steel, and then an air wing, and then a fleet to protect it. This is why."
+ }
+]

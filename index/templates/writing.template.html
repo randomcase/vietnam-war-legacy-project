@@ -1,0 +1,338 @@
+<title>TEMPLATE &middot; The notebook &amp;middot; Virgo on her side</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!--
+  TEMPLATE, extracted from writing.html by templatise.mjs.
+
+     source            writing.html
+     radio groups      0
+     checkboxes        0
+     counters          none
+     stored states     none — this page forgets everything on reload
+     :has() rules      0
+     script            YES — the source page runs script; this template does not carry it
+
+  WHAT IS STILL HERE
+  The whole stylesheet, and every input id from the source. That means this
+  file WORKS as it stands: the counters count, the :has() rules fire, the
+  controls light. Open it and press things before you change anything.
+
+  WHAT WAS TAKEN OUT
+  The prose. Titles, arguments, the ships and the myths. Everywhere you see
+  TODO, that is content the source page had and this one does not.
+
+  WHAT NOT TO DO
+  Do not rename the ids. Every rule in the stylesheet points at them by name,
+  and a renamed id fails silently — no error, nothing happens, and it looks
+  like the property is unsupported. That is mistake one in learn.html and it
+  is the most common way these pages break.
+
+  THE ONE RULE
+  A counter can only be printed after the things that increment it. Inputs
+  first in the DOM, totals after. Rearrange with grid, never with source order.
+-->
+<style>
+  :root{
+    --room:#08070a;
+    --paper:#f2ead7; --paper2:#e6dbc0; --edgepg:#d9cdb0;
+    --rule:#cec1a4; --margin:#a8443a;
+    --ink:#22201b; --pale:#7a6f5d; --faint:#a2957c;
+    --gold:#a8791a; --foil:#d9b455;
+    --term:#0c0b0a; --term2:#141210;
+    --amber:#d8b46b; --moss:#82a98d; --rust:#c4674f;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+    --mono:ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,"SF Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--room);color:var(--ink);overflow:hidden;
+    font:15px/1.6 var(--serif);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:14px 14px 0}
+
+  /* ══ the cover ══════════════════════════════════════════════════════ */
+  #cover{position:fixed;inset:0;z-index:80;
+    background:radial-gradient(150% 105% at 50% 56%,#141223 0%,#0a0910 55%,#050409 100%);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    cursor:pointer;transition:opacity .7s ease,visibility .7s}
+  #cover.gone{opacity:0;visibility:hidden}
+  .sky{width:min(1180px,95vw);height:auto;display:block}
+  .ecl{fill:none;stroke:#46597a;stroke-width:1;stroke-dasharray:5 7;opacity:.8}
+  .lk{stroke:#5a688a;stroke-width:.85;opacity:.55}
+  .st{fill:#eef1fa}
+  .fs{fill:#8f9ab5;opacity:.4}
+  .ven{fill:#ffe9ae}
+  .lb{fill:#96a2ba;font:600 9.5px/1 var(--mono);letter-spacing:.22em}
+  .lb.dim{fill:#5b667c;font-weight:300;font-size:8.5px;letter-spacing:.1em}
+  .lb.vn{fill:var(--foil);font-size:10.5px}
+  #cover h1{margin:12px 0 3px;color:#efe6d2;
+    font:500 33px/1.1 var(--serif);letter-spacing:.3em;text-indent:.3em}
+  #cover .sub{color:var(--foil);font:300 8.5px/1 var(--mono);
+    letter-spacing:.4em;text-indent:.4em;margin:0 0 16px}
+  #cover p{margin:0;color:#6c7488;max-width:66ch;text-align:center;
+    font:300 10.5px/1.95 var(--mono)}
+  #cover p b{color:#9aa7bf;font-weight:400}
+  #open{margin-top:22px;background:none;border:1px solid #2f3648;color:#8d95aa;
+    padding:9px 26px;cursor:pointer;font:400 9.5px/1 var(--mono);letter-spacing:.3em}
+  #open:hover{border-color:var(--foil);color:var(--foil)}
+
+  /* ══ the book ═══════════════════════════════════════════════════════ */
+  #book{display:grid;grid-template-columns:1fr 16px 1fr;
+    width:min(1600px,100%);flex:1;min-height:0;
+    box-shadow:0 0 0 1px #191510, 0 2px 0 #cfc3a6, 0 4px 0 #b9ad91,
+      0 6px 0 #a2977d, 0 32px 66px -16px rgba(0,0,0,.85)}
+  .leaf{background:linear-gradient(175deg,var(--paper) 0%,var(--paper2) 88%,var(--edgepg) 100%);
+    display:flex;flex-direction:column;min-width:0;min-height:0;position:relative}
+  .leaf::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E")}
+  .leaf.l{box-shadow:inset -26px 0 30px -26px rgba(62,44,18,.6)}
+  .leaf.r{box-shadow:inset 26px 0 30px -26px rgba(62,44,18,.6)}
+  #spine{background:linear-gradient(90deg,#8a7a58 0%,#3d3427 34%,#241d15 50%,#3d3427 66%,#8a7a58 100%);
+    box-shadow:inset 0 0 12px rgba(0,0,0,.75);position:relative}
+  #spine::before{content:"";position:absolute;left:50%;top:6%;bottom:6%;width:1px;
+    transform:translateX(-.5px);
+    background:repeating-linear-gradient(180deg,var(--foil) 0 9px,transparent 9px 22px);
+    opacity:.5}
+
+  #head{display:flex;align-items:center;gap:9px;padding:11px 20px 10px 60px;
+    border-bottom:1px solid var(--rule);flex:none}
+  #ttl{flex:1;min-width:0;background:none;border:none;outline:none;color:var(--ink);
+    font:italic 500 21px/1.25 var(--serif)}
+  #ttl::placeholder{color:var(--faint)}
+  #head select,#head button{background:#e5d9bf;border:1px solid var(--rule);
+    color:var(--ink);padding:5px 8px;cursor:pointer;font:400 10px/1.25 var(--mono)}
+  #head select{max-width:160px}
+  #head button{background:none;color:var(--pale)}
+  #head button:hover{color:var(--gold);border-color:var(--gold)}
+
+  #wrap{flex:1;overflow:auto;position:relative;display:flex;min-height:0}
+  #gut{flex:none;width:48px;padding:14px 8px 0 0;text-align:right;
+    font:400 12px/30px var(--mono);color:#bfb298;user-select:none;
+    border-right:1px solid transparent}
+  body.code #gut{border-right-color:var(--rule);font-size:11.5px;
+    line-height:24px;padding-top:12px;color:#b3a68c}
+  #stack{flex:1;position:relative;min-width:0}
+  /* the highlight layer sits directly under a transparent textarea. Identical
+     font, size, line-height, padding and wrapping, or the ink slides off the
+     letters — which is why both are set from one rule and never separately. */
+  #hl,#pen{margin:0;padding:14px 24px 40vh 14px;border:0;
+    font:16px/30px var(--serif);white-space:pre-wrap;word-break:break-word;
+    overflow-wrap:break-word;tab-size:2}
+  body.code #hl,body.code #pen{font:13.5px/24px var(--mono);padding-top:12px}
+  #hl{position:absolute;inset:0;pointer-events:none;color:var(--ink);overflow:hidden}
+  #pen{position:relative;width:100%;min-height:100%;display:block;resize:none;
+    background:transparent;outline:none;color:var(--ink);
+    background-image:repeating-linear-gradient(180deg,
+      transparent 0 29px,var(--rule) 29px 30px);
+    background-position:0 14px;background-attachment:local}
+  body.code #pen{color:transparent;caret-color:var(--ink);background-image:none}
+  #pen::placeholder{color:var(--faint)}
+  #pen::selection{background:rgba(168,68,58,.22)}
+  .leaf.l::before{content:"";position:absolute;left:48px;top:0;bottom:0;width:1px;
+    background:var(--margin);opacity:.34;pointer-events:none;z-index:3}
+  body.code .leaf.l::before{opacity:0}
+
+  /* syntax, in ink and iron rather than in neon */
+  .k{color:#7a4a86;font-weight:600}
+  .s{color:#5f7248}
+  .c{color:#9c9280;font-style:italic}
+  .n{color:#96661f}
+  .p{color:#6a6255}
+  .t{color:#2f5f6e;font-weight:600}
+  .a{color:#8a5a3a}
+
+  /* ══ the right leaf ═════════════════════════════════════════════════ */
+  #tabs{display:flex;border-bottom:1px solid var(--rule);flex:none}
+  #tabs button{flex:1;background:none;border:none;border-right:1px solid var(--rule);
+    padding:12px 2px;cursor:pointer;color:var(--faint);
+    font:400 8px/1 var(--mono);letter-spacing:.13em;text-transform:uppercase}
+  #tabs button:last-child{border-right:none}
+  #tabs button:hover{color:var(--pale)}
+  #tabs button.on{color:var(--ink);background:#e5d9bf;box-shadow:inset 0 -2px 0 var(--gold)}
+  #tabs button.teach.on{box-shadow:inset 0 -2px 0 var(--margin)}
+  .pane{display:none;flex:1;overflow-y:auto;padding:20px 24px 34px;min-height:0}
+  .pane.on{display:block}
+
+  h3{margin:0 0 2px;font:600 20px/1.22 var(--serif);color:var(--ink)}
+  .sub{margin:0 0 15px;font:300 9.5px/1.5 var(--mono);color:var(--faint);
+    letter-spacing:.1em;text-transform:uppercase}
+  .note{margin:0 0 13px;font:400 14px/1.72 var(--serif);color:#3f382e}
+  .ground{margin:0 0 13px;padding:13px 15px;background:#e9dfc6;
+    border-left:2px solid var(--gold);font:400 13px/1.75 var(--serif);color:#4d4436}
+  .ask{margin:0;padding:13px 15px;border:1px dashed var(--rule);
+    font:italic 400 14px/1.65 var(--serif);color:#544a3c}
+  .ask b{display:block;font:400 8px/1 var(--mono);font-style:normal;
+    letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin-bottom:7px}
+
+  .shape{margin:0;padding:0;list-style:none;font:400 11px/1 var(--mono)}
+  .shape li{display:flex;align-items:center;gap:8px;padding:5px 0;
+    border-bottom:1px dotted #dbcfb6}
+  .shape .no{width:20px;text-align:right;color:var(--faint);font-variant-numeric:tabular-nums}
+  .shape .rh{width:14px;text-align:center;color:var(--gold);font-weight:600}
+  .shape .rf{color:var(--margin);font-size:8.5px}
+  .shape .tx{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;
+    white-space:nowrap;color:#544a3c;font:400 13px/1.3 var(--serif)}
+  .shape .tx.e{color:#c2b599;font-style:italic}
+  .shape .sy{width:36px;text-align:right;color:var(--faint);font-size:9.5px;
+    font-variant-numeric:tabular-nums}
+  .shape .sy.off{color:var(--gold);font-weight:600}
+  .shape li.done{background:#ebe1ca}
+  .shape li.brk{border-bottom:1px solid var(--pale);padding-bottom:10px;margin-bottom:6px}
+
+  #ends{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-bottom:13px}
+  #ends input{background:#e9dfc6;border:1px solid var(--rule);padding:7px 5px;
+    font:400 11px/1 var(--mono);color:var(--ink);text-align:center;min-width:0;outline:none}
+  #ends input:focus{border-color:var(--gold);background:#f0e7d2}
+  #spiral{width:100%;border-collapse:collapse;font:400 10.5px/1 var(--mono)}
+  #spiral th{color:var(--faint);font-weight:400;font-size:8px;letter-spacing:.14em;
+    text-transform:uppercase;padding:0 0 7px}
+  #spiral td{padding:6px 4px;border-top:1px dotted #dbcfb6;color:#544a3c;
+    text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:0}
+  #spiral td.now{background:#ebe1ca;color:var(--ink);font-weight:600}
+  #spiral tr.now th{color:var(--gold)}
+
+  .met{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule);
+    border:1px solid var(--rule);margin-bottom:15px}
+  .met div{background:var(--paper);padding:11px 5px;text-align:center}
+  .met u{display:block;text-decoration:none;font:400 19px/1.1 var(--mono);
+    color:var(--ink);font-variant-numeric:tabular-nums}
+  .met s{display:block;text-decoration:none;margin-top:4px;
+    font:300 7.5px/1.25 var(--mono);letter-spacing:.12em;
+    text-transform:uppercase;color:var(--faint)}
+  #bars{display:flex;align-items:flex-end;gap:2px;height:70px;margin-bottom:7px;
+    border-bottom:1px solid var(--rule)}
+  #bars i{flex:1;min-width:2px;background:#c6b898}
+  #bars i.long{background:var(--gold)}
+  .cap{margin:0 0 17px;font:300 9.5px/1.7 var(--mono);color:var(--faint)}
+  .cap b{color:var(--gold);font-weight:400}
+  .lex{margin:0 0 15px;font:400 13px/1.8 var(--serif);color:#4d4436}
+  .lex b{color:var(--ink)}
+  .rep{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+  .rep span{background:#e5d9bf;border:1px solid var(--rule);padding:3px 8px;
+    font:400 10px/1 var(--mono);color:#544a3c}
+  .rep span u{text-decoration:none;color:var(--gold);margin-left:6px}
+
+  /* the grade: two axes, both counted */
+  .gr{display:flex;align-items:baseline;gap:9px;padding:7px 0;
+    border-bottom:1px dotted #dbcfb6;font:400 11px/1.4 var(--mono)}
+  .gr a{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;
+    white-space:nowrap;color:var(--ink);text-decoration:none;
+    font:400 13px/1.35 var(--serif)}
+  .gr a:hover{color:var(--gold);text-decoration:underline}
+  .gr i{font-style:normal;font-size:8.5px;letter-spacing:.06em;
+    padding:3px 6px;border:1px solid var(--rule);white-space:nowrap}
+  .gr i.run{color:var(--gold);border-color:var(--gold)}
+  .gr i.css{color:#4d6b3f;border-color:#9db58e}
+  .gr i.press{color:var(--pale)}
+  .gr i.none{color:var(--faint);border-style:dashed}
+  .gr u{text-decoration:none;width:64px;text-align:right;color:var(--faint);
+    font-size:9.5px;white-space:nowrap}
+  .gr u.set{color:#4d6b3f} .gr u.prov{color:var(--gold)}
+  .gr.here{background:#ebe1ca}
+  .dr{padding:10px 12px;border:1px solid var(--rule);margin-bottom:5px;
+    cursor:pointer;background:#ece2cb}
+  .dr:hover{border-color:var(--pale)}
+  .dr.on{background:#e5d9bf;border-color:var(--gold);box-shadow:inset 2px 0 0 var(--gold)}
+  .dr b{display:block;font:600 14px/1.3 var(--serif);color:var(--ink);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .dr i{font-style:normal;display:block;margin-top:3px;
+    font:300 9px/1.4 var(--mono);color:var(--faint)}
+  #newd{width:100%;margin-bottom:10px;padding:9px;background:#e5d9bf;
+    border:1px solid var(--rule);cursor:pointer;color:var(--ink);
+    font:400 10px/1 var(--mono);letter-spacing:.14em}
+  #newd:hover{border-color:var(--gold);color:var(--gold)}
+
+  /* ══ the lesson ═════════════════════════════════════════════════════ */
+  #lsel{width:100%;margin-bottom:16px;background:#e9dfc6;border:1px solid var(--rule);
+    padding:8px;font:400 10.5px/1.2 var(--mono);color:var(--ink);cursor:pointer}
+  .sec{margin:0 0 20px}
+  .sec h4{margin:0 0 7px;font:600 9px/1.3 var(--mono);letter-spacing:.18em;
+    text-transform:uppercase;color:var(--margin)}
+  .sec p{margin:0 0 11px;font:400 14px/1.74 var(--serif);color:#3b342b}
+  .sec pre{margin:0 0 11px;padding:12px 14px;background:#1a1713;color:#cdc4b2;
+    font:400 11px/1.62 var(--mono);overflow-x:auto;
+    border-left:2px solid var(--gold)}
+  .sec pre i{font-style:normal}
+  .prac{margin:20px 0 0;padding:15px;border:1px solid var(--margin);
+    background:#ece1c8}
+  .prac h4{margin:0 0 8px;font:600 9px/1 var(--mono);letter-spacing:.2em;
+    text-transform:uppercase;color:var(--margin)}
+  .prac p{margin:0 0 12px;font:400 13.5px/1.7 var(--serif);color:#3b342b}
+  .prac button{background:var(--margin);border:none;color:#f4ece0;
+    padding:9px 16px;cursor:pointer;font:400 10px/1 var(--mono);letter-spacing:.14em}
+  .prac button:hover{background:#8e392f}
+  .prac button.g{background:none;color:var(--pale);border:1px solid var(--rule)}
+  .prac button.g:hover{color:var(--ink);border-color:var(--pale)}
+  .cks{margin:13px 0 0;padding:0;list-style:none}
+  .cks li{display:flex;gap:9px;padding:6px 0;border-top:1px dotted #d3c6ac;
+    font:400 12.5px/1.5 var(--serif);color:#544a3c}
+  .cks li b{flex:none;width:15px;text-align:center;font:400 12px/1.5 var(--mono)}
+  .cks li.p b{color:#4f7a5e}
+  .cks li.f b{color:var(--rust)}
+  .cks li.u b{color:#bcae94}
+  .cks li.p{color:#3b342b}
+  .needs{margin:0 0 15px;font:300 9.5px/1.6 var(--mono);color:var(--faint)}
+  .needs b{color:var(--gold);font-weight:400}
+
+  /* ══ the drawer ═════════════════════════════════════════════════════ */
+  #drawer{width:min(1600px,100%);flex:none;height:236px;display:flex;
+    flex-direction:column;background:var(--term);border-top:1px solid #2a241c;
+    box-shadow:0 -18px 40px -20px rgba(0,0,0,.9);transition:height .22s ease}
+  body.shut #drawer{height:31px}
+  #dbar{flex:none;display:flex;align-items:center;gap:11px;height:31px;
+    padding:0 12px;background:var(--term2);border-bottom:1px solid #241e18;
+    font:400 9px/1 var(--mono);letter-spacing:.15em;color:#5f594f;
+    text-transform:uppercase;cursor:pointer;user-select:none}
+  #dbar b{color:var(--amber);font-weight:400}
+  #dbar .sp{margin-left:auto;text-transform:none;letter-spacing:.04em;color:#4b463e}
+  #dbar .sp em{font-style:normal;color:#7a746a}
+  #out{flex:1;overflow-y:auto;padding:11px 14px;
+    font:400 11.5px/1.62 var(--mono);color:#a49c8c;white-space:pre-wrap;
+    word-break:break-word}
+  #out .cmd{color:#6f6a60}
+  #out .cmd b{color:var(--amber);font-weight:400}
+  #out .ok{color:var(--moss)}
+  #out .err{color:var(--rust)}
+  #out .dim{color:#5f594f}
+  #out .hd{color:var(--amber)}
+  #out section{padding:2px 0 8px}
+  #inrow{flex:none;display:flex;align-items:center;gap:9px;padding:9px 14px;
+    border-top:1px solid #241e18;background:var(--term2)}
+  #ps{color:var(--amber);font:400 11.5px/1 var(--mono);flex:none}
+  #cli{flex:1;background:none;border:none;outline:none;color:#d6cfbf;
+    font:400 11.5px/1.4 var(--mono);min-width:0}
+  #cli::placeholder{color:#4b463e}
+
+  #say{position:fixed;left:16px;bottom:6px;z-index:90;
+    font:300 8.5px/1 var(--mono);color:#4a453d;letter-spacing:.07em}
+  #back{position:fixed;right:16px;bottom:6px;z-index:90;background:none;
+    border:none;cursor:pointer;color:#4a453d;font:300 8.5px/1 var(--mono);
+    letter-spacing:.11em}
+  #back:hover{color:var(--foil)}
+
+  @media (max-width:1040px){
+    body{overflow:auto;display:block;padding:0;height:auto}
+    #book{grid-template-columns:1fr;width:100%;box-shadow:none}
+    #spine{height:10px;background:linear-gradient(180deg,#8a7a58,#241d15,#8a7a58)}
+    #spine::before{left:0;right:0;top:50%;bottom:auto;width:auto;height:1px;
+      transform:none;background:repeating-linear-gradient(90deg,
+        var(--foil) 0 9px,transparent 9px 22px)}
+    #wrap{min-height:54vh}
+    #drawer{width:100%;height:280px}
+  }
+</style>
+
+<div class="wrap board desk deck app v h">
+  <header>
+    <h1>TODO title</h1>
+    <span class="sub lede">TODO one sentence on what this board is for &mdash;
+      say what it computes and where the numbers come from.</span>
+    <span class="tag">no script</span>
+  </header>
+
+
+  <div class="panel">
+    <p class="note">TODO. The stylesheet above is the source page's, unchanged,
+      so anything it could do this can do. Add markup that its rules already
+      target &mdash; look for class names in the CSS that nothing here uses yet.</p>
+  </div>
+</div>

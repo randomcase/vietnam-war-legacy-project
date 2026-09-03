@@ -1,0 +1,141 @@
+<title>TEMPLATE &middot; The houses &amp;middot; luxury, by who owns it</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!--
+  TEMPLATE, extracted from houses.html by templatise.mjs.
+
+     source            houses.html
+     radio groups      0
+     checkboxes        0
+     counters          none
+     stored states     none — this page forgets everything on reload
+     :has() rules      0
+     script            YES — the source page runs script; this template does not carry it
+
+  WHAT IS STILL HERE
+  The whole stylesheet, and every input id from the source. That means this
+  file WORKS as it stands: the counters count, the :has() rules fire, the
+  controls light. Open it and press things before you change anything.
+
+  WHAT WAS TAKEN OUT
+  The prose. Titles, arguments, the ships and the myths. Everywhere you see
+  TODO, that is content the source page had and this one does not.
+
+  WHAT NOT TO DO
+  Do not rename the ids. Every rule in the stylesheet points at them by name,
+  and a renamed id fails silently — no error, nothing happens, and it looks
+  like the property is unsupported. That is mistake one in learn.html and it
+  is the most common way these pages break.
+
+  THE ONE RULE
+  A counter can only be printed after the things that increment it. Inputs
+  first in the DOM, totals after. Rearrange with grid, never with source order.
+-->
+<style>
+  :root{
+    --bg:#0a0c10; --panel:#11151b; --edge:#1e2630; --edge2:#2c3744;
+    --ink:#dfe4ea; --dim:#8a939e; --faint:#59626d;
+    --gold:#c9a227; --moss:#7d9d6a; --rust:#c4674f; --cool:#6f9fb5;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --mono:ui-monospace,"Cascadia Mono",Consolas,"SF Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.7 var(--serif);padding:34px 18px 80px}
+  main{max-width:1240px;margin:0 auto}
+  a{color:var(--gold);text-decoration:none} a:hover{text-decoration:underline}
+  .top{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:4px}
+  h1{margin:0;font:500 38px/1.06 var(--serif)}
+  .top span{font:400 9px/1 var(--mono);letter-spacing:.3em;text-transform:uppercase;
+    color:var(--gold)}
+  .intro{margin:0 0 22px;max-width:86ch;color:var(--dim);font-size:15px}
+
+  .card{background:var(--panel);border:1px solid var(--edge);padding:16px 18px;
+    margin-bottom:14px}
+  .card h3{margin:0 0 12px;font:400 8.5px/1 var(--mono);letter-spacing:.2em;
+    text-transform:uppercase;color:var(--gold)}
+  .card h3 span{color:var(--faint);margin-left:10px;letter-spacing:.04em;
+    text-transform:none}
+
+  .figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(140px,100%),1fr));
+    gap:1px;background:var(--edge);border:1px solid var(--edge);margin-bottom:14px}
+  .fig{background:var(--panel);padding:14px 15px}
+  .fig b{display:block;font:400 27px/1.1 var(--serif);color:var(--ink);
+    font-variant-numeric:tabular-nums}
+  .fig i{display:block;font:400 8px/1.5 var(--mono);letter-spacing:.13em;
+    text-transform:uppercase;color:var(--faint);font-style:normal;margin-top:5px}
+
+  .rig>*{min-width:0}
+  .rig{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:14px;align-items:start}
+  @media (max-width:1000px){
+    /* minmax(0,1fr) and not 1fr: a bare 1fr track keeps min-width:auto,
+       so the widest table inside it refuses to shrink and pushes the whole
+       page sideways no matter how much overflow-x the wrapper declares. */
+    .rig{grid-template-columns:minmax(0,1fr)}
+  }
+
+  .bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+  .bar input{flex:1;min-width:180px;background:#0b0f14;border:1px solid var(--edge2);
+    color:var(--ink);padding:9px 11px;font:400 13px/1.2 var(--mono);outline:none}
+  .bar input:focus{border-color:var(--gold)}
+  .bar select{background:#0b0f14;border:1px solid var(--edge2);color:var(--ink);
+    padding:9px;font:400 11px/1.2 var(--mono);outline:none;max-width:200px}
+  .bar b{font:400 11px/1 var(--mono);color:var(--faint);font-weight:400}
+
+  .chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+  .chip{background:none;border:1px solid var(--edge2);color:var(--faint);
+    padding:5px 10px;cursor:pointer;font:400 9.5px/1.3 var(--mono)}
+  .chip:hover{color:var(--dim)}
+  .chip.on{border-color:var(--gold);color:var(--gold);background:#171d25}
+
+  table{width:100%;border-collapse:collapse;font:400 13px/1.5 var(--serif)}
+  thead th{position:sticky;top:0;background:var(--panel);text-align:left;
+    padding:0 10px 8px 0;color:var(--faint);font-weight:400;font-size:8px;
+    letter-spacing:.14em;text-transform:uppercase;border-bottom:1px solid var(--edge2)}
+  td{padding:8px 10px 8px 0;border-bottom:1px solid #161c23;vertical-align:top}
+  td.y{font:400 12px/1.5 var(--mono);color:var(--dim);text-align:right;
+    font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.n b{font-weight:500;color:var(--ink)}
+  td.n em{display:block;font-style:normal;font-size:12px;color:var(--faint);
+    line-height:1.5;margin-top:2px}
+  td.c{font:400 10px/1.5 var(--mono);color:var(--faint)}
+  .m{display:inline-block;font:400 8px/1 var(--mono);letter-spacing:.08em;
+    color:var(--rust);border:1px solid #4a2b22;padding:3px 5px;margin-left:7px;
+    vertical-align:1px}
+  .wrap{max-height:660px;overflow-y:auto;overflow-x:auto}
+
+  .note{padding:12px 14px;border-left:3px solid var(--edge2);background:#0e1319;
+    font:400 13.5px/1.7 var(--serif);color:var(--dim);margin-bottom:11px}
+  .note.warn{border-left-color:var(--rust)}
+  .note b{color:var(--ink)}
+  ol,ul{margin:0;padding-left:19px;color:var(--dim);font-size:13.5px;line-height:1.65}
+  li{margin-bottom:7px}
+
+  .split{display:flex;align-items:center;gap:9px;margin-bottom:6px;
+    font:400 11px/1.4 var(--mono)}
+  .split i{font-style:normal;width:78px;color:var(--dim);text-align:right;
+    flex:none;font-size:10px}
+  .split u{text-decoration:none;flex:1;height:11px;background:#161c23;position:relative}
+  .split u s{position:absolute;left:0;top:0;bottom:0;background:var(--rust);
+    text-decoration:none;opacity:.8}
+  .split em{font-style:normal;width:40px;color:var(--faint);font-size:10px;
+    text-align:right;flex:none;font-variant-numeric:tabular-nums}
+
+  footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--edge);
+    color:var(--faint);font:400 10.5px/1.85 var(--mono)}
+</style>
+
+<div class="wrap board desk deck app v h">
+  <header>
+    <h1>TODO title</h1>
+    <span class="sub lede">TODO one sentence on what this board is for &mdash;
+      say what it computes and where the numbers come from.</span>
+    <span class="tag">no script</span>
+  </header>
+
+
+  <div class="panel">
+    <p class="note">TODO. The stylesheet above is the source page's, unchanged,
+      so anything it could do this can do. Add markup that its rules already
+      target &mdash; look for class names in the CSS that nothing here uses yet.</p>
+  </div>
+</div>

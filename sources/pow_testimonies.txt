@@ -1,0 +1,35 @@
+THE TAP CODE
+
+A 5x5 grid, the Polybius square, with K folded into C:
+
+        1  2  3  4  5
+    1   A  B  C  D  E
+    2   F  G  H  I  J
+    3   L  M  N  O  P
+    4   Q  R  S  T  U
+    5   V  W  X  Y  Z
+
+Row taps, pause, column taps.  B = tap . tap-tap.  T = tap-tap-tap-tap . tap-tap-tap-tap.
+GN = good night, through the walls every evening.  GBU = God bless you.
+When the guards listened at the walls: sweep the floor, cough, thump a thigh, blink, on the same grid.
+Introduced at Hoa Lo in 1965 by Smitty Harris, who had learned the square from an instructor at survival school.
+
+STOCKDALE
+  James B. Stockdale, shot down 9 September 1965, senior naval officer at Hoa Lo; seven and a half years.
+  In Love and War (1984), with Sybil Stockdale: the code, the rope torture, the resistance rules (BACK US), and the
+  wives' campaign at home that made the prisoners a public issue in 1969.
+
+ALVAREZ
+  Everett Alvarez Jr., A-4 from USS Constellation, shot down 5 August 1964 in Pierce Arrow; first Navy prisoner;
+  eight years and six months; Chained Eagle (1989).
+
+STIRM
+  Robert L. Stirm, shot down 27 October 1967; released 14 March 1973; the Burst of Joy photograph at Travis, 17 March 1973;
+  had received his wife's letter ending the marriage three days before the photograph.
+
+McCAIN
+  John S. McCain III, shot down 26 October 1967 over Hanoi; refused early release out of turn in 1968 when his father took
+  Pacific Command; five and a half years.
+
+HOMECOMING
+  12 February to 4 April 1973; 591 returned in 54 C-141 flights; 2,646 then listed missing; 1,587 still unaccounted for in 2020.

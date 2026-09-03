@@ -1,0 +1,21 @@
+SIMULATED. This is a reconstruction of the form of a night recovery at Yankee Station, not a transcript of any real one.
+Callsigns, fuel states and times are invented. For real audio see the NHHC oral histories.
+
+Setting: Yankee Station, Gulf of Tonkin. 0240. Overcast, rain, no horizon, deck pitching.
+Raven 402: F-4B, back from a strike near the DMZ, fuel state 2.1 (2,100 lb).
+
+[02:40:12] RAVEN 402   Yankee, Raven 402, three miles, established, state two point one.
+[02:40:18] PRI-FLY     402, copy two point one. Deck clear, one through four set, thirty-two knots down the angle. Cleared to land.
+[02:40:29] RAVEN 402   402, in the goo, no boat yet, give me needles.
+[02:40:35] PRI-FLY     402, slightly left, on glideslope, come right two, watch the rate, deck's moving three feet.
+[02:40:48] RAVEN 402   402, Phantom, ball, two point oh.
+[02:40:53] PADDLES     Roger ball, 402. Looking good. Little power. Don't settle.
+[02:41:01] PADDLES     Power. POWER. You're low. Fly the ball, not the deck.
+[02:41:05]             [engines to military]
+[02:41:08] PADDLES     Right there. Hold it.
+[02:41:12]             [trap; engines to full — every landing is flown as a bolter until the wire holds]
+[02:41:15] PRI-FLY     Good trap, 402, three-wire. Throttles back. Safe on deck.
+[02:41:21] RAVEN 402   402, that was a wall out there. Thanks, Paddles.
+[02:41:26] PADDLES     Clear the area, 402. Intruder behind you on fumes.
+
+Note the one correction to the brief's version: after the wheels touch the pilot goes to full power, not idle, in case the hook misses.

@@ -1,0 +1,133 @@
+<title>TEMPLATE &middot; The steading &amp;middot; six clans, one castle, nothing pressed</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!--
+  TEMPLATE, extracted from steading.html by templatise.mjs.
+
+     source            steading.html
+     radio groups      0
+     checkboxes        0
+     counters          none
+     stored states     none — this page forgets everything on reload
+     :has() rules      0
+     script            YES — the source page runs script; this template does not carry it
+
+  WHAT IS STILL HERE
+  The whole stylesheet, and every input id from the source. That means this
+  file WORKS as it stands: the counters count, the :has() rules fire, the
+  controls light. Open it and press things before you change anything.
+
+  WHAT WAS TAKEN OUT
+  The prose. Titles, arguments, the ships and the myths. Everywhere you see
+  TODO, that is content the source page had and this one does not.
+
+  WHAT NOT TO DO
+  Do not rename the ids. Every rule in the stylesheet points at them by name,
+  and a renamed id fails silently — no error, nothing happens, and it looks
+  like the property is unsupported. That is mistake one in learn.html and it
+  is the most common way these pages break.
+
+  THE ONE RULE
+  A counter can only be printed after the things that increment it. Inputs
+  first in the DOM, totals after. Rearrange with grid, never with source order.
+-->
+<style>
+  :root{
+    --night:#0a0d10; --hall:#121820; --edge:#1e2831; --edge2:#2b3947;
+    --ink:#e2ddd0; --dim:#8b8778; --faint:#5c5850;
+    --stone:#c8bda6; --fire:#c8762b; --gold:#c9a227; --moss:#7d9d6a; --iron:#7d8b96;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --mono:ui-monospace,"Cascadia Mono",Consolas,"SF Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--night);color:var(--ink);font:16px/1.68 var(--serif);
+    padding:30px 16px 70px}
+  main{max-width:1280px;margin:0 auto}
+  a{color:var(--gold);text-decoration:none} a:hover{text-decoration:underline}
+  .top{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:3px}
+  h1{margin:0;font:500 36px/1.08 var(--serif)}
+  .top span{font:400 9px/1 var(--mono);letter-spacing:.28em;text-transform:uppercase;
+    color:var(--fire)}
+  .intro{margin:0 0 18px;max-width:84ch;color:var(--dim);font-size:15px}
+
+  .stock{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(110px,100%),1fr));
+    gap:1px;background:var(--edge);border:1px solid var(--edge);margin-bottom:14px}
+  .stock div{background:var(--hall);padding:11px 8px;text-align:center}
+  .stock u{display:block;text-decoration:none;font:400 19px/1 var(--mono);
+    font-variant-numeric:tabular-nums}
+  .stock b{display:block;font-weight:400;margin-top:5px;font:400 7.5px/1 var(--mono);
+    letter-spacing:.13em;text-transform:uppercase;color:var(--faint)}
+  .stock .stone u{color:var(--stone)} .stock .lime u{color:#d9d2bd}
+  .stock .timber u{color:var(--moss)} .stock .iron u{color:var(--iron)}
+  .stock .food u{color:var(--gold)}  .stock .record u{color:var(--faint)}
+
+  .rig{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:14px}
+  @media (max-width:1020px){ .rig{grid-template-columns:1fr} }
+  .stage{background:linear-gradient(180deg,#151c24,#0d1217);border:1px solid var(--edge);
+    position:relative}
+  canvas{display:block;width:100%;height:auto}
+  .cap{position:absolute;left:12px;bottom:10px;right:12px;font:400 9px/1.5 var(--mono);
+    color:var(--faint);pointer-events:none}
+
+  aside{display:flex;flex-direction:column;gap:12px}
+  .card{background:var(--hall);border:1px solid var(--edge);padding:13px 14px}
+  .card h3{margin:0 0 10px;font:400 8.5px/1 var(--mono);letter-spacing:.2em;
+    text-transform:uppercase;color:var(--fire)}
+  #plan{width:100%;background:#0d1217;border:1px solid var(--edge2);color:var(--ink);
+    padding:8px;font:400 11px/1.2 var(--mono);cursor:pointer}
+  .turn{display:flex;align-items:center;gap:5px;margin-top:9px}
+  .turn span{font:400 8px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+    color:var(--faint);margin-right:2px}
+  .turn button{flex:1;background:#0d1217;border:1px solid var(--edge2);color:var(--faint);
+    padding:7px 4px;cursor:pointer;font:400 9px/1 var(--mono);letter-spacing:.08em}
+  .turn button:hover{color:var(--ink)}
+  .turn button.on{color:var(--fire);border-color:var(--fire)}
+
+  .work{margin:0;padding:0;list-style:none}
+  .work li{padding:9px 0;border-bottom:1px dotted #202a33}
+  .work li:last-child{border-bottom:none}
+  .work .hd{display:flex;align-items:baseline;gap:8px;font:400 11px/1.3 var(--mono)}
+  .work .hd b{flex:1;color:var(--dim);font-weight:400}
+  .work .hd u{text-decoration:none;color:var(--faint);font-size:9.5px}
+  .work li.on .hd b{color:var(--ink)}
+  .work li.done .hd b{color:var(--moss)}
+  .work li.done .hd u{color:var(--moss)}
+  .work li.locked{opacity:.42}
+  .t{height:5px;background:#182029;margin-top:6px}
+  .t i{display:block;height:100%;background:var(--fire);width:0}
+  .work li.done .t i{background:var(--moss)}
+  .work .why{margin:6px 0 0;font:400 12px/1.55 var(--serif);color:var(--faint);display:none}
+  .work li.on .why{display:block}
+
+  .clans{margin:0;padding:0;list-style:none;font:400 10.5px/1.4 var(--mono)}
+  .clans li{display:flex;align-items:baseline;gap:8px;padding:5px 0;
+    border-bottom:1px dotted #202a33}
+  .clans li:last-child{border-bottom:none}
+  .clans b{flex:1;color:var(--dim);font-weight:400}
+  .clans em{font-style:normal;color:var(--fire);width:26px;text-align:right}
+  .clans u{text-decoration:none;color:var(--faint);width:52px;text-align:right}
+
+  .say{margin:0;font:400 12.5px/1.65 var(--serif);color:var(--dim)}
+  .say b{color:var(--ink)}
+  .done-note{margin:10px 0 0;padding:10px 12px;background:#121a14;
+    border-left:2px solid var(--moss);font:400 12.5px/1.6 var(--serif);color:var(--moss)}
+  footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--edge);
+    color:var(--faint);font:400 10px/1.85 var(--mono);
+    display:flex;gap:16px;flex-wrap:wrap}
+  footer .r{margin-left:auto}
+</style>
+
+<div class="wrap board desk deck app v h">
+  <header>
+    <h1>TODO title</h1>
+    <span class="sub lede">TODO one sentence on what this board is for &mdash;
+      say what it computes and where the numbers come from.</span>
+    <span class="tag">no script</span>
+  </header>
+
+
+  <div class="panel">
+    <p class="note">TODO. The stylesheet above is the source page's, unchanged,
+      so anything it could do this can do. Add markup that its rules already
+      target &mdash; look for class names in the CSS that nothing here uses yet.</p>
+  </div>
+</div>

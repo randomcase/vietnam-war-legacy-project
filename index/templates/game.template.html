@@ -1,0 +1,561 @@
+<title>TEMPLATE &middot; Venus Yard · the aerostat</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!--
+  TEMPLATE, extracted from game.html by templatise.mjs.
+
+     source            game.html
+     radio groups      0
+     checkboxes        0
+     counters          none
+     stored states     none — this page forgets everything on reload
+     :has() rules      0
+     script            YES — the source page runs script; this template does not carry it
+
+  WHAT IS STILL HERE
+  The whole stylesheet, and every input id from the source. That means this
+  file WORKS as it stands: the counters count, the :has() rules fire, the
+  controls light. Open it and press things before you change anything.
+
+  WHAT WAS TAKEN OUT
+  The prose. Titles, arguments, the ships and the myths. Everywhere you see
+  TODO, that is content the source page had and this one does not.
+
+  WHAT NOT TO DO
+  Do not rename the ids. Every rule in the stylesheet points at them by name,
+  and a renamed id fails silently — no error, nothing happens, and it looks
+  like the property is unsupported. That is mistake one in learn.html and it
+  is the most common way these pages break.
+
+  THE ONE RULE
+  A counter can only be printed after the things that increment it. Inputs
+  first in the DOM, totals after. Rearrange with grid, never with source order.
+-->
+<style>
+  :root{
+    --void:#07060a; --panel:#141119; --panel2:#1b1722; --edge:#332c40;
+    --ink:#f2eee6; --dim:#9a8fa8; --gold:#e8c069; --gold2:#ffe6a8;
+    --venus:#f0a83c; --h2:#7fd0e0; --pw:#e8c069; --wat:#6ec6ff; --com:#7fc98a;
+    --bad:#e0705a; --ok:#65d6a8;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{margin:0;background:#050407;color:var(--ink);overflow:hidden;
+    font:13px/1.5 ui-rounded,system-ui,-apple-system,sans-serif;
+    display:grid;place-items:center}
+
+  /* the sky, behind everything, bleeding past the phone */
+  #sky{position:fixed;inset:0;z-index:0}
+
+  /* ------------------------------------------------------------ the shell
+     Phone shape on a phone, a proper wide app on a desktop. The aspect ratio
+     is not the design; the single column is, and above 860px the panes stop
+     being pages you switch to and become a sidebar that is always open. */
+  .phone{position:relative;z-index:1;width:min(404px,100vw);height:min(876px,100vh);
+    border-radius:34px;border:1px solid #2a2333;overflow:hidden;
+    background:linear-gradient(180deg,rgba(12,10,17,.30),rgba(8,7,12,.48));
+    box-shadow:0 40px 120px rgba(0,0,0,.75),0 0 0 9px #0b0910,0 0 0 10px #1d1826;
+    display:flex;flex-direction:column;backdrop-filter:blur(2px)}
+
+  @media (max-width:520px){
+    body{display:block}
+    .phone{width:100vw;height:100vh;border-radius:0;border:0;box-shadow:none}
+  }
+
+  @media (min-width:860px){
+    .phone{width:min(1180px,94vw);height:min(880px,94vh);
+      display:grid;grid-template-columns:1fr 344px;
+      grid-template-rows:auto auto auto auto 1fr auto;
+      grid-template-areas:'res side' 'clock side' 'forest side' 'supply side'
+                          'stage side' 'nav side'}
+    .res{grid-area:res} .clockbar{grid-area:clock}
+    #supply{grid-area:supply;margin:9px 12px 0}
+    #forest{grid-area:forest}
+    .stage{grid-area:stage} nav{grid-area:nav}
+    .relay,.run{grid-area:stage}
+    .side{grid-area:side;border-left:1px solid var(--edge);overflow:auto;
+      background:rgba(10,8,14,.6);display:block}
+    .pane{display:none !important}
+    .side .pane{display:block !important;border-bottom:1px solid var(--edge)}
+    .side h4{margin:0;padding:11px 13px 8px;font:9px/1 ui-monospace,monospace;
+      letter-spacing:.2em;text-transform:uppercase;color:var(--gold);
+      background:#0d0b13;border-bottom:1px solid var(--edge)}
+    nav button[data-tab="roster"],nav button[data-tab="fleet"],
+    nav button[data-tab="codex"],nav button[data-tab="hub"]{display:none}
+    .side #side-hub{padding:0}
+    nav{grid-template-columns:repeat(3,1fr)}
+    .run{perspective:640px}
+    .stage.off{display:block}
+
+    /* THE SHEET STOPS BEING A DRAWER. On a phone a panel that slides up from
+       the bottom edge is right — the thumb is there and the edge is reachable.
+       On a desktop there is no thumb and no edge, and 74% of the height
+       arriving from below is a phone gesture performed at somebody who is
+       sitting still. Same element, same .up class, same JS: only the geometry
+       changes, which is what a media query is for. */
+    .sheet{left:50%;right:auto;bottom:auto;top:50%;width:min(560px,62vw);
+      max-height:78%;border-radius:14px;border:1px solid var(--edge);
+      box-shadow:0 24px 70px rgba(0,0,0,.6);padding:16px 18px 18px;
+      transform:translate(-50%,-46%) scale(.97);opacity:0;pointer-events:none;
+      transition:transform .18s cubic-bezier(.2,.8,.3,1),opacity .18s}
+    .sheet.up{transform:translate(-50%,-50%) scale(1);opacity:1;
+      pointer-events:auto}
+    .sheet .grab{display:none}
+    /* four destinations read better side by side than stacked when there is
+       room for them to be */
+    .mf{grid-template-columns:1fr 1fr}
+  }
+  .side{display:none}
+
+  /* ------------------------------------------------------------- top bar */
+  .res{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:#241e2e;
+    border-bottom:1px solid var(--edge);flex:none}
+  .res div{background:#100d16;padding:8px 6px;text-align:center}
+  .res span{display:block;font:8px/1 ui-monospace,monospace;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--dim)}
+  .res b{display:block;font:14px/1.2 ui-monospace,Menlo,monospace;margin-top:4px}
+  .res i{display:block;font-style:normal;font:8px/1 ui-monospace,monospace;
+    color:#5f5470;margin-top:3px}
+  .r-h2 b{color:var(--h2)} .r-pw b{color:var(--pw)}
+  .r-wa b{color:var(--wat)} .r-co b{color:var(--com)}
+  .res b.low{color:var(--bad)}
+
+  .clockbar{display:flex;align-items:center;gap:8px;padding:6px 12px;flex:none;
+    background:#0c0a11;border-bottom:1px solid var(--edge);
+    font:9px/1 ui-monospace,monospace;letter-spacing:.1em;color:var(--dim)}
+  .clockbar b{color:var(--gold2)}
+  .clockbar .day{margin-left:auto}
+  .clockbar .night{color:var(--h2)}
+
+  /* --------------------------------------------------------- the 3D stage */
+  .stage{position:relative;flex:1;overflow:hidden;perspective:900px;
+    perspective-origin:50% 42%;touch-action:none;cursor:grab;
+    user-select:none;-webkit-user-select:none;
+    background:radial-gradient(ellipse at 50% 46%,rgba(6,4,10,.30),rgba(4,3,7,.78) 78%)}
+  .sheet{user-select:text;-webkit-user-select:text}
+  .stage:active{cursor:grabbing}
+  .world{position:absolute;left:50%;top:50%;width:0;height:0;
+    transform-style:preserve-3d;transition:transform .12s linear}
+  .plate{position:absolute;width:460px;height:460px;left:-230px;top:-230px;
+    transform-style:preserve-3d;
+    background:
+      repeating-linear-gradient(0deg,rgba(232,192,105,.10) 0 1px,transparent 1px 46px),
+      repeating-linear-gradient(90deg,rgba(232,192,105,.10) 0 1px,transparent 1px 46px),
+      radial-gradient(circle at 50% 50%,rgba(240,168,60,.16),rgba(20,15,28,.86) 68%);
+    border:1px solid rgba(232,192,105,.28);border-radius:10px;
+    box-shadow:0 0 60px rgba(240,168,60,.18)}
+  .plate::after{content:"";position:absolute;inset:-40px;border-radius:24px;
+    border:1px dashed rgba(232,192,105,.16);transform:translateZ(-26px)}
+
+  .slot{position:absolute;width:84px;height:84px;margin:-42px 0 0 -42px;
+    transform-style:preserve-3d;cursor:pointer}
+  .slot .pad{position:absolute;inset:0;border:1px solid rgba(232,192,105,.3);
+    border-radius:7px;background:rgba(232,192,105,.05)}
+  .slot.locked .pad{border-style:dashed;border-color:rgba(154,143,168,.3);
+    background:rgba(154,143,168,.03)}
+  .slot .tower{position:absolute;left:50%;bottom:50%;width:44px;margin-left:-22px;
+    transform-style:preserve-3d}
+  /* a BOX is one storey: four faces and a lid, at its own width, lifted to its
+     own base. A tower is one or more of them stacked, which is the whole of
+     how three silhouettes come out of one function. */
+  .slot .box{position:absolute;transform-style:preserve-3d}
+  .slot .face{position:absolute;left:0;transform-origin:bottom center;
+    border:1px solid rgba(0,0,0,.5)}
+  .slot .top{position:absolute;left:0;border:1px solid rgba(255,255,255,.22)}
+  /* contact shadow — the one cue that makes a floating box sit on a plate */
+  .slot .ao{position:absolute;left:50%;top:50%;width:96px;height:96px;
+    margin:-48px 0 0 -48px;border-radius:50%;pointer-events:none;
+    background:radial-gradient(circle,rgba(0,0,0,.55),rgba(0,0,0,0) 66%);
+    transform:translateZ(1px);opacity:0;transition:opacity .3s}
+  .slot.built .ao{opacity:1}
+  /* and a light at the crown, so a built sector reads as running rather than
+     merely present */
+  .slot .crown{position:absolute;left:50%;width:70px;height:70px;
+    margin-left:-35px;border-radius:50%;pointer-events:none;opacity:0;
+    transition:opacity .45s}
+  .slot.built .crown{opacity:.5}
+  .slot .cap{position:absolute;left:50%;transform:translate(-50%,0);
+    white-space:nowrap;font:8.5px/1 ui-monospace,monospace;letter-spacing:.06em;
+    color:var(--dim);text-shadow:0 1px 3px #000;pointer-events:none}
+  .slot.built .cap{color:var(--gold2)}
+  .slot.sel .pad{border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.35),
+    0 0 26px rgba(232,192,105,.5)}
+  .slot .bar{position:absolute;left:50%;width:52px;height:4px;margin-left:-26px;
+    background:#2a2333;border-radius:3px;overflow:hidden}
+  .slot .bar i{display:block;height:100%;background:var(--gold);width:0}
+
+  /* --------------------------------------------------------------- sheets */
+  .sheet{position:absolute;left:0;right:0;bottom:0;max-height:74%;overflow:auto;
+    background:linear-gradient(180deg,rgba(24,20,32,.97),rgba(16,13,22,.99));
+    border-top:1px solid var(--edge);border-radius:16px 16px 0 0;
+    transform:translateY(101%);transition:transform .22s cubic-bezier(.2,.8,.3,1);
+    z-index:5;padding:12px 14px 16px}
+  .sheet.up{transform:translateY(0)}
+  .sheet .grab{width:36px;height:4px;border-radius:3px;background:#3a3247;
+    margin:0 auto 10px}
+  .sheet h3{margin:0 0 2px;font-size:16px;color:var(--gold2)}
+  .sheet .sub{color:var(--dim);font-size:10.5px;margin:0 0 10px}
+  .sheet .body{font-size:12px;color:#d6cfe0}
+  .sheet .why{border-left:3px solid var(--gold);padding:2px 0 2px 11px;
+    margin:10px 0;color:var(--dim);font-size:11px}
+  .cost{display:flex;gap:12px;flex-wrap:wrap;margin:10px 0;
+    font:10px/1 ui-monospace,monospace}
+  .cost span{color:var(--dim)} .cost b{color:var(--ink)}
+  .needs{margin:9px 0 0;font-size:11px}
+  .needs div{display:flex;gap:8px;align-items:center;padding:4px 0}
+  .needs .tick{width:14px;height:14px;border-radius:4px;flex:none;
+    border:1px solid var(--edge)}
+  .needs .yes .tick{background:var(--ok);border-color:var(--ok)}
+  .needs .no .tick{background:transparent;border-color:var(--bad)}
+  .needs .no{color:var(--bad)}
+  button{font:inherit;font-size:13px;font-weight:650;cursor:pointer;width:100%;
+    padding:12px;border-radius:11px;border:1px solid var(--gold);
+    background:var(--gold);color:#171009;margin-top:10px}
+  button:disabled{opacity:.4;cursor:not-allowed}
+  button.ghost{background:transparent;color:var(--dim);border-color:var(--edge)}
+
+  /* ----------------------------------------------------------------- nav */
+  nav{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:#241e2e;
+    border-top:1px solid var(--edge);flex:none}
+  nav button{width:auto;margin:0;border-radius:0;border:0;background:#100d16;
+    color:var(--dim);font-size:10px;font-weight:600;padding:11px 4px 12px;
+    letter-spacing:.06em}
+  nav button.on{color:var(--gold2);background:#171226;
+    box-shadow:inset 0 2px 0 var(--gold)}
+
+  .list{padding:2px 0 8px}
+  .row{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;
+    border-bottom:1px solid #241e2e}
+  .row:last-child{border-bottom:0}
+  .row .dot{width:34px;height:34px;border-radius:9px;flex:none;
+    display:grid;place-items:center;font-size:16px;background:#1a1524;
+    border:1px solid var(--edge)}
+  .row .t{flex:1;min-width:0}
+  .row .t b{display:block;font-size:12.5px;color:var(--ink)}
+  .row .t span{display:block;font-size:10.5px;color:var(--dim);margin-top:2px;
+    line-height:1.45}
+  .row .badge{font:8.5px/1 ui-monospace,monospace;letter-spacing:.1em;
+    text-transform:uppercase;padding:4px 6px;border-radius:5px;flex:none;
+    border:1px solid var(--edge);color:var(--dim)}
+  /* TWO REGISTERS. The kingdom — base and run — is dark, dimensional and lit
+     from a planet. The administrative layers — orders, fleet, codex — get the
+     office view: flat, pale-ruled, papery, no perspective and no glow, because
+     a ledger that looks like a throne room is a ledger nobody checks. */
+  .pane{display:none;flex:1;overflow:auto;
+    background:linear-gradient(180deg,#15131c,#101019);
+    background-image:repeating-linear-gradient(180deg,
+      rgba(255,255,255,.022) 0 1px,transparent 1px 34px)}
+  .pane.on{display:block}
+  .pane .row .dot{background:#1e1b28;border-radius:5px;box-shadow:none}
+  .pane .row .badge{border-radius:3px;background:#1a1824}
+  .stage.off{display:none}
+
+  /* ------------------------------------------------------------- the run
+     Same CSS-3D technique, camera turned to face down the colonnade instead of
+     down at the plate. Segments recycle as they pass the camera. */
+  .run{position:relative;flex:1;overflow:hidden;perspective:520px;
+    perspective-origin:50% 44%;display:none;touch-action:none;
+    user-select:none;-webkit-user-select:none;
+    background:linear-gradient(180deg,#0a0713 0%,#1a1020 46%,#2a1508 100%)}
+  .run.on{display:block}
+  .track{position:absolute;left:50%;top:50%;width:0;height:0;
+    transform-style:preserve-3d}
+  .seg{position:absolute;transform-style:preserve-3d}
+  .floor{position:absolute;left:-150px;width:300px;height:200px;
+    background:linear-gradient(180deg,rgba(232,192,105,.13),rgba(232,192,105,.03));
+    border-top:1px solid rgba(232,192,105,.30);
+    transform:rotateX(90deg);transform-origin:top center}
+  .pil{position:absolute;width:34px;transform-style:preserve-3d}
+  .pil i{position:absolute;left:0;width:34px;display:block;
+    border:1px solid rgba(0,0,0,.5)}
+  .pick{position:absolute;width:22px;height:22px;margin:-11px 0 0 -11px;
+    border-radius:50%;background:radial-gradient(circle at 36% 32%,#dffaff,#7fd0e0 60%,#2f7c8c);
+    box-shadow:0 0 14px rgba(127,208,224,.8)}
+  .hz{position:absolute;width:56px;height:44px;margin-left:-28px;
+    background:linear-gradient(180deg,#e0705a,#7a2a1e);border:1px solid #ff9c86;
+    border-radius:4px;box-shadow:0 0 16px rgba(224,112,90,.6)}
+  .runner{position:absolute;left:50%;width:26px;height:34px;margin-left:-13px;
+    border-radius:6px;background:linear-gradient(180deg,#ffe6a8,#e8c069);
+    box-shadow:0 0 20px rgba(232,192,105,.8);transition:transform .11s ease-out}
+  .hud{position:absolute;left:0;right:0;top:0;display:flex;gap:14px;
+    padding:9px 13px;font:10px/1 ui-monospace,monospace;color:var(--dim);
+    background:linear-gradient(180deg,rgba(8,6,12,.9),transparent);z-index:3}
+  .hud b{color:var(--gold2)} .hud .r{margin-left:auto}
+  .over{position:absolute;inset:0;display:none;place-items:center;z-index:6;
+    background:rgba(8,6,12,.9);text-align:center;padding:24px}
+  .over.on{display:grid}
+  .over h3{margin:0 0 6px;font-size:19px;color:var(--gold2)}
+  .over p{margin:0 0 4px;font-size:12px;color:var(--dim);max-width:34ch}
+  .over button{max-width:230px;margin:14px auto 0}
+
+  /* the gate: the run keeps going, you do the thinking */
+  .gate{position:absolute;left:10px;right:10px;bottom:12px;z-index:7;
+    background:linear-gradient(180deg,rgba(26,21,36,.97),rgba(16,12,24,.99));
+    border:1px solid var(--gold);border-radius:14px;padding:13px 14px;
+    transform:translateY(140%);transition:transform .26s cubic-bezier(.2,.8,.3,1)}
+  .gate.up{transform:translateY(0)}
+  .gate .stanza{font:italic 12px/1.55 ui-serif,Georgia,serif;color:var(--gold2);
+    border-left:2px solid var(--gold);padding-left:11px;margin:0 0 10px}
+  .gate .q{font-size:13px;margin:0 0 10px;color:var(--ink)}
+  .gate .opts{display:grid;gap:7px}
+  .gate .opts button{margin:0;padding:10px;font-size:12.5px;background:#221b30;
+    color:var(--ink);border-color:var(--edge);font-weight:600}
+  .gate .opts button:hover{border-color:var(--gold)}
+  .gate .opts button.right{background:var(--ok);color:#07130d;border-color:var(--ok)}
+  .gate .opts button.wrong{background:#3a1c18;color:#ffb3a3;border-color:var(--bad)}
+  .gate .tag{font:8.5px/1 ui-monospace,monospace;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--dim);margin-bottom:7px}
+
+  .toast{position:absolute;left:12px;right:12px;bottom:74px;z-index:9;
+    background:rgba(30,24,40,.97);border:1px solid var(--edge);border-radius:11px;
+    padding:10px 12px;font-size:11.5px;color:#e4dcf0;opacity:0;
+    transition:opacity .2s;pointer-events:none}
+  .toast.show{opacity:1}
+  .toast b{color:var(--bad)}
+
+  .hint{position:absolute;left:0;right:0;bottom:8px;text-align:center;
+    font:9px/1.4 ui-monospace,monospace;color:#544a63;pointer-events:none}
+  /* ══════════════════════════════════════════════════════════ THE RELAY
+     Two buttons. That is the whole interface and it is the whole idea.
+
+     Base is a plate you orbit, run is a corridor you read, and this is a
+     thing that flies itself while you watch. You do not steer it. You decide
+     WHEN IT LEAVES, and you can stop it, and there is nothing else — because
+     once a thing is automated the operator is an injector, and an injector
+     has exactly two verbs. */
+  .relay{position:absolute;inset:0;display:none;flex-direction:column;
+    background:linear-gradient(180deg,#05070c,#080c14 60%,#0a0f16)}
+  .relay.on{display:flex}
+  .relay.dead{filter:grayscale(.8) brightness(.55)}
+  .rl-top{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+    background:#1b2836;border-bottom:1px solid #1b2836;flex:none}
+  .rl-top div{background:#0a0f17;padding:8px 10px}
+  .rl-top span{display:block;font:8px/1 ui-monospace,monospace;letter-spacing:.15em;
+    text-transform:uppercase;color:#6a7e92}
+  .rl-top b{display:block;font:15px/1.25 ui-monospace,monospace;color:#e6eef7;
+    margin-top:4px}
+  .rl-top i{font-style:normal;font-size:9.5px;color:#6a7e92}
+  .rl-top .lag b{color:#ffb46b}
+  .rl-top .hand b{color:#ffe9a8;font-size:12.5px}
+
+  .lane{position:relative;flex:1;overflow:hidden;touch-action:none}
+  .corr{position:absolute;left:0;right:0;background:rgba(95,214,164,.09);
+    border-top:1px solid rgba(95,214,164,.42);
+    border-bottom:1px solid rgba(95,214,164,.42)}
+  .corr.out{background:rgba(255,180,107,.10);
+    border-top-color:rgba(255,180,107,.5);border-bottom-color:rgba(255,180,107,.5)}
+  .zone{position:absolute;top:0;bottom:0;width:3px;background:rgba(157,138,224,.30)}
+  .zone::after{content:attr(data-n);position:absolute;top:8px;left:7px;
+    font:8px/1 ui-monospace,monospace;letter-spacing:.14em;color:#9d8ae0;
+    white-space:nowrap}
+  .zone.live{background:rgba(157,138,224,.9);box-shadow:0 0 18px rgba(157,138,224,.7)}
+  .end{position:absolute;top:0;bottom:0;width:2px;background:#22303f}
+  .end::after{content:attr(data-n);position:absolute;bottom:10px;left:7px;
+    font:8px/1 ui-monospace,monospace;letter-spacing:.14em;color:#54677c}
+  .end.r::after{left:auto;right:7px}
+  .hull{position:absolute;width:16px;height:11px;margin:-5px 0 0 -8px;
+    border-radius:3px 8px 8px 3px;
+    background:linear-gradient(180deg,#eaf4ff,#9fc4e0);
+    box-shadow:0 0 14px rgba(160,200,235,.55)}
+  .hull.out{background:linear-gradient(180deg,#ffd9b0,#e0a05a);
+    box-shadow:0 0 14px rgba(224,160,90,.6)}
+  .baton{position:absolute;width:8px;height:8px;margin:-4px 0 0 -4px;
+    border-radius:2px;transform:rotate(45deg);background:#ffe9a8;
+    box-shadow:0 0 12px rgba(255,233,168,.85)}
+  /* the correction the automation has already sent and not yet had answered.
+     It is drawn because the entire mode is about the fact that it exists. */
+  .cmd{position:absolute;width:5px;height:5px;margin:-2px 0 0 -2px;
+    border-radius:50%;background:#6ec6ff;box-shadow:0 0 9px rgba(110,198,255,.9)}
+  /* the trail — where the hull has been, so the hunting at the far end is
+     visible as a shape rather than only as a number */
+  .trail{position:absolute;inset:0;pointer-events:none}
+
+  .rl-note{flex:none;padding:9px 12px;border-top:1px solid #1b2836;
+    background:#070b11;color:#6a7e92;font:10px/1.6 ui-monospace,monospace}
+  .rl-note b{color:#cfdae6} .rl-note em{font-style:normal;color:#ffb46b}
+  /* TWO BUTTONS. One go, one stop. There is no third. */
+  .rl-pads{flex:none;display:grid;grid-template-columns:2fr 1fr;gap:9px;
+    padding:10px 12px 12px;border-top:1px solid #1b2836;background:#070b11}
+  .rl-pads button{cursor:pointer;font:11px/1 ui-monospace,monospace;
+    letter-spacing:.18em;padding:17px 0;border-radius:11px;border:1px solid;
+    transition:opacity .2s}
+  #rl-go{border-color:#5fd6a4;background:rgba(95,214,164,.12);color:#5fd6a4}
+  #rl-go:active{background:rgba(95,214,164,.26)}
+  #rl-go[disabled]{opacity:.28;cursor:default}
+  #rl-kill{border-color:#e0705a;background:rgba(224,112,90,.10);color:#e0705a}
+  #rl-kill:active{background:rgba(224,112,90,.28)}
+  #rl-kill[disabled]{opacity:.28;cursor:default}
+  .rl-card{position:absolute;inset:0;display:none;place-items:center;
+    background:rgba(5,7,12,.9);backdrop-filter:blur(3px);text-align:center;
+    padding:26px}
+  .rl-card.on{display:grid}
+  .rl-card h3{margin:0 0 9px;font-size:17px;color:#e8dcc4}
+  .rl-card p{margin:0;max-width:46ch;color:#8fa1b4;font-size:12px;line-height:1.75}
+  .rl-card p b{color:#e6eef7} .rl-card p em{font-style:normal;color:#ffe9a8}
+
+  /* ══════════════════════════════════════════════════════════ THE MANIFEST
+     The sheet a ship's arriving mass opens. Four rows, a remainder, and a
+     commit — because the game's own header has always said the only real
+     decision is what you spend the arriving mass on before the next one, and
+     until now the mass just landed in the pot and converted itself. */
+  .mf{display:grid;gap:8px;margin:12px 0 4px}
+  .mf .r{min-width:0}
+  .mf .r{display:grid;grid-template-columns:1fr auto auto auto;gap:9px;
+    align-items:center;background:#0d141b;border:1px solid #22303f;
+    border-radius:10px;padding:9px 10px}
+  .mf .r b{display:block;font-size:12.5px;color:#e6eef7}
+  .mf .r i{font-style:normal;display:block;font-size:10px;color:#7b8b9c;
+    line-height:1.55;margin-top:2px}
+  .mf .r em{font-style:normal;font:13px/1 ui-monospace,monospace;color:#ffe9a8;
+    min-width:5.5ch;text-align:right}
+  .mf .r button{cursor:pointer;width:34px;height:34px;border-radius:8px;
+    border:1px solid #22303f;background:#111a24;color:#9fb0c2;
+    font:15px/1 ui-monospace,monospace}
+  .mf .r button:active{background:#18242f;color:#eaf2fa}
+  .mf .r button:disabled{opacity:.25;cursor:default}
+  .mf-left{display:flex;align-items:baseline;gap:9px;padding:10px 11px;
+    border:1px dashed #22303f;border-radius:10px;margin-bottom:4px}
+  .mf-left span{font:8.5px/1 ui-monospace,monospace;letter-spacing:.14em;
+    text-transform:uppercase;color:#7b8b9c}
+  .mf-left b{margin-left:auto;font:16px/1 ui-monospace,monospace;color:#ffe9a8}
+  .mf-left.zero b{color:#5fd6a4}
+  .win{display:flex;align-items:center;gap:8px;padding:8px 11px;border-radius:9px;
+    border:1px solid #3d5a2a;background:rgba(95,214,164,.10);margin-bottom:9px;
+    font:10px/1.5 ui-monospace,monospace;color:#5fd6a4}
+  .win.held{border-color:#5a4a2a;background:rgba(224,177,85,.10);color:#e0b155}
+
+  /* ══════════════════════════════════════════════════════════ THE FOREST
+     A fifth readout, and the only one denominated in the objective rather
+     than in a stock. It moves slowly on purpose — the whole finding is that
+     it does not move at all while you are shipping. */
+  .forest{display:flex;align-items:center;gap:9px;padding:7px 12px;flex:none;
+    background:#0a0f0b;border-bottom:1px solid var(--edge);
+    font:9px/1 ui-monospace,monospace;letter-spacing:.09em;color:var(--dim)}
+  .forest b{color:#6fc08a}
+  .forest .track{flex:1;height:5px;border-radius:3px;background:#16211a;
+    overflow:hidden;min-width:60px}
+  .forest .track i{display:block;height:100%;width:0;border-radius:3px;
+    background:linear-gradient(90deg,#3f7a55,#6fc08a);transition:width .4s}
+  .forest .rate{color:var(--gold2)}
+  .src{display:grid;gap:8px;margin:11px 0 4px}
+  .src .r{background:#0d141b;border:1px solid #22303f;border-radius:10px;
+    padding:10px 11px;border-left:3px solid #384a5c}
+  .src .r.on{border-left-color:#6fc08a}
+  .src .r b{display:block;font-size:12.5px;color:#e6eef7}
+  .src .r em{font-style:normal;float:right;font:12px/1 ui-monospace,monospace;
+    color:#ffe9a8}
+  .src .r i{font-style:normal;display:block;font-size:10.5px;color:#7b8b9c;
+    line-height:1.6;margin-top:5px}
+  .src .r s{display:block;text-decoration:none;font:9.5px/1.6 ui-monospace,monospace;
+    color:#5f6f80;margin-top:6px;border-top:1px solid #1b2530;padding-top:6px}
+  /* ══════════════════════════════════════════════════════ THE KNOWLEDGE HUB */
+  .hub{padding:11px 12px}
+  .hub .hd{display:flex;align-items:baseline;gap:9px;margin-bottom:10px;
+    font:9px/1 ui-monospace,monospace;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--dim)}
+  .hub .hd b{color:var(--gold2);font-size:13px;letter-spacing:0;
+    text-transform:none;font-family:inherit}
+  .hub .hd s{margin-left:auto;text-decoration:none;color:#5f5470}
+  .k{background:#100d16;border:1px solid var(--edge);border-radius:11px;
+    padding:11px 12px;margin-bottom:8px;border-left:3px solid #2f2840}
+  .k.got{border-left-color:#6fc08a}
+  .k h5{margin:0;font-size:13px;color:#5f5470;display:flex;align-items:baseline;
+    gap:8px}
+  .k.got h5{color:var(--gold2)}
+  .k h5 i{font-style:normal;margin-left:auto;font:8px/1 ui-monospace,monospace;
+    letter-spacing:.13em;text-transform:uppercase;color:#4d4460;
+    border:1px solid #2f2840;border-radius:4px;padding:4px 6px}
+  .k.got h5 i{color:#6fc08a;border-color:#3f6b52}
+  .k .lock{margin:7px 0 0;font-size:10.5px;color:#5f5470;line-height:1.6}
+  .k .lock b{color:#8a7fa0}
+  .k .sh{margin:7px 0 0;font-size:11.5px;color:#d6cfe0;line-height:1.65}
+  .k .tst{margin:9px 0 0;padding:9px 10px;background:#0b0910;border-radius:8px;
+    border-left:2px solid var(--gold);font-size:10.5px;color:var(--dim);
+    line-height:1.65}
+  .k .tst u{display:block;text-decoration:none;font:8px/1 ui-monospace,monospace;
+    letter-spacing:.15em;text-transform:uppercase;color:var(--gold);
+    margin-bottom:5px}
+  .k .ran{margin:8px 0 0;padding:9px 10px;border-radius:8px;font-size:11px;
+    line-height:1.65;background:rgba(111,192,138,.08);
+    border:1px solid rgba(111,192,138,.28);color:#bfe6cd}
+  .k .ran b{color:#eafaf0}
+  .k .ran em{font-style:normal;color:#ffe9a8}
+  /* ═══════════════════════════════════════════════════════════ THE BOOT
+     Six seconds, skippable on anything, and it has one job beyond looking
+     like a machine waking up: it hands you eighteen hundred years and then
+     tells you that none of it counts yet. That is not a flourish, it is the
+     Hub's whole premise stated before you can misread it — twenty-seven
+     entries resident, zero verified, because a download is not a
+     demonstration and the difference is the game. */
+  .boot{position:fixed;inset:0;z-index:50;background:#04050a;overflow:hidden;
+    display:grid;place-items:center;transition:opacity .7s}
+  .boot.gone{opacity:0;pointer-events:none}
+  /* the sweep: a cold start reading its own surface before it trusts it */
+  .boot .sweep{position:absolute;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,transparent,rgba(110,198,255,.85),transparent);
+    box-shadow:0 0 26px rgba(110,198,255,.6);animation:bsweep 1.6s ease-in-out 2}
+  @keyframes bsweep{from{top:-2%}to{top:102%}}
+  .boot .grid{position:absolute;inset:-20%;opacity:0;
+    background:
+      repeating-linear-gradient(0deg,rgba(110,198,255,.10) 0 1px,transparent 1px 44px),
+      repeating-linear-gradient(90deg,rgba(110,198,255,.10) 0 1px,transparent 1px 44px);
+    transform:perspective(700px) rotateX(66deg) translateY(14%);
+    animation:bgrid 5.2s ease-out forwards}
+  @keyframes bgrid{15%{opacity:0}45%{opacity:.55}100%{opacity:.12}}
+  .boot .vig{position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(circle at 50% 46%,transparent 34%,rgba(4,5,10,.92) 78%)}
+
+  .bwrap{position:relative;width:min(560px,88vw);text-align:left;
+    font:11.5px/1.75 ui-monospace,SFMono-Regular,Menlo,monospace;color:#7f93a8}
+  .bline{opacity:0;animation:bin .5s ease-out forwards}
+  @keyframes bin{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+  .bline b{color:#cfe2f2;font-weight:600}
+  .bline u{text-decoration:none;color:#6ec6ff}
+  .bline em{font-style:normal;color:#ffe9a8}
+  .bhail{margin:14px 0;padding:11px 14px;border-left:2px solid #6ec6ff;
+    background:rgba(110,198,255,.06);color:#bfd6e8;font-size:12px;line-height:1.8}
+  .bhail s{display:block;text-decoration:none;font-size:9px;letter-spacing:.18em;
+    text-transform:uppercase;color:#6ec6ff;margin-bottom:6px}
+
+  /* the stream: eighteen hundred years going past faster than reading */
+  .bstream{height:96px;overflow:hidden;position:relative;margin:12px 0;
+    -webkit-mask-image:linear-gradient(180deg,transparent,#000 22%,#000 74%,transparent);
+    mask-image:linear-gradient(180deg,transparent,#000 22%,#000 74%,transparent)}
+  .bstream div{white-space:nowrap;font-size:10.5px;color:#54697e;
+    padding:1px 0;letter-spacing:.02em}
+  .bstream div span{color:#8fb4cf}
+  .bstream .roll{position:absolute;left:0;right:0;top:0;will-change:transform}
+  .bbar{height:3px;border-radius:2px;background:#16222e;overflow:hidden;margin-top:9px}
+  .bbar i{display:block;height:100%;width:0;border-radius:2px;
+    background:linear-gradient(90deg,#2f6f8f,#6ec6ff)}
+  .bcount{display:flex;gap:10px;align-items:baseline;margin-top:9px;font-size:10.5px}
+  .bcount b{color:#6ec6ff;font:14px/1 ui-monospace,monospace}
+  .bcount s{margin-left:auto;text-decoration:none;color:#54697e}
+
+  .bverdict{margin-top:16px;padding:13px 15px;border:1px solid #2a3a48;
+    border-left:3px solid #ffe9a8;border-radius:0 10px 10px 0;
+    background:rgba(255,233,168,.05);color:#cfe2f2;font-size:12px;line-height:1.8;
+    opacity:0;animation:bin .6s ease-out forwards}
+  .bverdict b{color:#ffe9a8}
+  .bskip{position:absolute;right:16px;bottom:14px;font-size:9.5px;
+    letter-spacing:.14em;text-transform:uppercase;color:#3f5061;cursor:pointer;
+    border:1px solid #22303f;border-radius:7px;padding:8px 12px}
+  .bskip:hover{color:#9fb4c6;border-color:#3a4c5e}
+  @media (prefers-reduced-motion:reduce){
+    .boot .sweep,.boot .grid{animation:none;opacity:.2}}
+</style>
+
+<div class="wrap board desk deck app v h">
+  <header>
+    <h1>TODO title</h1>
+    <span class="sub lede">TODO one sentence on what this board is for &mdash;
+      say what it computes and where the numbers come from.</span>
+    <span class="tag">no script</span>
+  </header>
+
+
+  <div class="panel">
+    <p class="note">TODO. The stylesheet above is the source page's, unchanged,
+      so anything it could do this can do. Add markup that its rules already
+      target &mdash; look for class names in the CSS that nothing here uses yet.</p>
+  </div>
+</div>

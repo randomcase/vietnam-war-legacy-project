@@ -1,0 +1,74 @@
+[
+ {
+  "hull": "PatrolBoat",
+  "name": "HMAS Attack",
+  "pennant": 1,
+  "station": "MarketTime",
+  "tons": 100,
+  "profile": "Patrol"
+ },
+ {
+  "hull": "PatrolBoat",
+  "name": "HMAS Aware",
+  "pennant": 2,
+  "station": "MarketTime",
+  "tons": 100,
+  "profile": "Patrol"
+ },
+ {
+  "hull": "Destroyer",
+  "name": "HMAS Hobart",
+  "pennant": 3,
+  "station": "Gunline",
+  "tons": 3600,
+  "profile": "Escort"
+ },
+ {
+  "hull": "Destroyer",
+  "name": "HMAS Perth",
+  "pennant": 4,
+  "station": "Gunline",
+  "tons": 3600,
+  "profile": "Escort"
+ },
+ {
+  "hull": "Destroyer",
+  "name": "HMAS Brisbane",
+  "pennant": 5,
+  "station": "Gunline",
+  "tons": 3600,
+  "profile": "Escort"
+ },
+ {
+  "hull": "LightCarrier",
+  "name": "HMAS Melbourne",
+  "pennant": 6,
+  "station": "Home",
+  "tons": 20000,
+  "profile": "AirWing"
+ },
+ {
+  "hull": "LightCruiser",
+  "name": "HMAS Hobart (I)",
+  "pennant": 7,
+  "station": "Home",
+  "tons": 7050,
+  "profile": "Scout"
+ },
+ {
+  "hull": "Battleship",
+  "name": "never",
+  "pennant": 8,
+  "station": "Home",
+  "tons": 45000,
+  "profile": "Bombardment"
+ },
+ {
+  "hull": "Supercarrier",
+  "name": "never",
+  "pennant": 9,
+  "station": "YankeeStation",
+  "tons": 61000,
+  "profile": "AirWing"
+ }
+]

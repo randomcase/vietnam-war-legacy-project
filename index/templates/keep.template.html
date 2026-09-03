@@ -1,0 +1,141 @@
+<title>TEMPLATE &middot; The bench &amp;middot; build your own keep</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!--
+  TEMPLATE, extracted from keep.html by templatise.mjs.
+
+     source            keep.html
+     radio groups      0
+     checkboxes        0
+     counters          none
+     stored states     none — this page forgets everything on reload
+     :has() rules      0
+     script            YES — the source page runs script; this template does not carry it
+
+  WHAT IS STILL HERE
+  The whole stylesheet, and every input id from the source. That means this
+  file WORKS as it stands: the counters count, the :has() rules fire, the
+  controls light. Open it and press things before you change anything.
+
+  WHAT WAS TAKEN OUT
+  The prose. Titles, arguments, the ships and the myths. Everywhere you see
+  TODO, that is content the source page had and this one does not.
+
+  WHAT NOT TO DO
+  Do not rename the ids. Every rule in the stylesheet points at them by name,
+  and a renamed id fails silently — no error, nothing happens, and it looks
+  like the property is unsupported. That is mistake one in learn.html and it
+  is the most common way these pages break.
+
+  THE ONE RULE
+  A counter can only be printed after the things that increment it. Inputs
+  first in the DOM, totals after. Rearrange with grid, never with source order.
+-->
+<style>
+  :root{
+    --sky:#0c0f13; --panel:#141a20; --edge:#212b34; --edge2:#2e3b47;
+    --ink:#e3ddcf; --dim:#8c8778; --faint:#5d5951;
+    --stone:#c8bda6; --gold:#c9a227; --bad:#c4674f; --good:#7d9d6a; --cool:#5f92a8;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --mono:ui-monospace,"Cascadia Mono",Consolas,"SF Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--sky);color:var(--ink);font:16px/1.68 var(--serif);
+    padding:34px 18px 80px}
+  main{max-width:1240px;margin:0 auto}
+  a{color:var(--gold);text-decoration:none} a:hover{text-decoration:underline}
+  .top{display:flex;align-items:baseline;gap:15px;flex-wrap:wrap;margin-bottom:4px}
+  h1{margin:0;font:500 38px/1.08 var(--serif)}
+  .top span{font:400 9px/1 var(--mono);letter-spacing:.3em;text-transform:uppercase;
+    color:var(--gold)}
+  .intro{margin:0 0 22px;max-width:82ch;color:var(--dim);font-size:15.5px}
+
+  .rig{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px}
+  @media (max-width:1000px){ .rig{grid-template-columns:1fr} }
+
+  .stage{background:linear-gradient(180deg,#161d24,#0e1318);border:1px solid var(--edge);
+    position:relative}
+  canvas{display:block;width:100%;height:auto}
+  .cap{position:absolute;left:12px;bottom:10px;right:12px;
+    font:400 9px/1.55 var(--mono);color:var(--faint);pointer-events:none}
+
+  aside{display:flex;flex-direction:column;gap:12px}
+  .card{background:var(--panel);border:1px solid var(--edge);padding:14px 15px}
+  .card h3{margin:0 0 10px;font:400 8.5px/1 var(--mono);letter-spacing:.2em;
+    text-transform:uppercase;color:var(--gold)}
+  .card.bill h3{color:var(--cool)} .card.judge h3{color:var(--bad)}
+  .card.judge.ok h3{color:var(--good)}
+
+  .k{margin-bottom:11px}
+  .k label{display:flex;justify-content:space-between;align-items:baseline;
+    font:400 9px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;
+    color:var(--faint);margin-bottom:6px}
+  .k label b{color:var(--gold);font-weight:400;font-size:12px}
+  .k input[type=range]{width:100%;accent-color:var(--gold)}
+  .k input[type=text]{width:100%;background:#0e1318;border:1px solid var(--edge2);
+    color:var(--ink);padding:7px 8px;font:400 12px/1.3 var(--mono);outline:none}
+  .k input[type=text]:focus{border-color:var(--gold)}
+
+  .wards{display:flex;flex-direction:column;gap:9px}
+  .ward{border:1px solid var(--edge2);padding:10px 11px;background:#0f151a}
+  .ward .hd{display:flex;align-items:baseline;gap:8px;margin-bottom:9px}
+  .ward .hd b{font:400 11px/1 var(--mono);color:var(--ink)}
+  .ward .hd button{margin-left:auto;background:none;border:1px solid var(--edge2);
+    color:var(--faint);cursor:pointer;padding:3px 7px;font:400 9px/1 var(--mono)}
+  .ward .hd button:hover{color:var(--bad);border-color:var(--bad)}
+  .row{display:flex;gap:7px}
+  .row .k{flex:1;margin-bottom:8px}
+  .add{width:100%;background:#182029;border:1px solid var(--edge2);color:var(--ink);
+    padding:9px;cursor:pointer;font:400 10px/1 var(--mono);letter-spacing:.11em}
+  .add:hover{border-color:var(--gold);color:var(--gold)}
+
+  .bill dl{margin:0;display:grid;grid-template-columns:1fr auto;gap:6px 10px;
+    font:400 11.5px/1.35 var(--mono)}
+  .bill dt{color:var(--faint)} .bill dd{margin:0;text-align:right;
+    font-variant-numeric:tabular-nums}
+  .bill .tot{margin-top:10px;padding-top:10px;border-top:1px solid var(--edge)}
+  .bill .tot u{display:block;text-decoration:none;font:400 8px/1.3 var(--mono);
+    letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:5px}
+  .bill .tot b{font:400 26px/1 var(--mono);color:var(--cool);font-weight:400}
+  .bill .tot s{display:block;text-decoration:none;margin-top:6px;
+    font:400 11px/1.5 var(--serif);color:var(--dim)}
+
+  .judge ul{margin:0;padding:0;list-style:none}
+  .judge li{display:flex;gap:8px;padding:7px 0;border-bottom:1px dotted #232c35;
+    font:400 12px/1.5 var(--serif);color:var(--dim)}
+  .judge li:last-child{border-bottom:none}
+  .judge li b{flex:none;color:var(--bad)}
+  .judge .stands{font:400 13px/1.6 var(--serif);color:var(--good);margin:0}
+  .judge .stands b{color:var(--good)}
+
+  .out{display:flex;gap:8px;flex-wrap:wrap}
+  .out button{flex:1;background:#182029;border:1px solid var(--edge2);color:var(--ink);
+    padding:10px 8px;cursor:pointer;font:400 10px/1 var(--mono);letter-spacing:.1em}
+  .out button:hover{border-color:var(--gold);color:var(--gold)}
+  .out button:disabled{color:var(--faint);border-color:#1c242c;cursor:default}
+  #json{width:100%;height:150px;margin-top:10px;background:#0a0e12;
+    border:1px solid var(--edge2);color:var(--dim);padding:10px;
+    font:400 10px/1.5 var(--mono);resize:vertical;display:none}
+  #json.on{display:block}
+
+  #from{width:100%;background:#0e1318;border:1px solid var(--edge2);color:var(--ink);
+    padding:8px;font:400 11px/1.2 var(--mono);cursor:pointer;margin-bottom:11px}
+
+  footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--edge);
+    color:var(--faint);font:400 10px/1.9 var(--mono)}
+</style>
+
+<div class="wrap board desk deck app v h">
+  <header>
+    <h1>TODO title</h1>
+    <span class="sub lede">TODO one sentence on what this board is for &mdash;
+      say what it computes and where the numbers come from.</span>
+    <span class="tag">no script</span>
+  </header>
+
+
+  <div class="panel">
+    <p class="note">TODO. The stylesheet above is the source page's, unchanged,
+      so anything it could do this can do. Add markup that its rules already
+      target &mdash; look for class names in the CSS that nothing here uses yet.</p>
+  </div>
+</div>
