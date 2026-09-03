@@ -1,5 +1,19 @@
 # vietnam-war-legacy-project
 
+**Public. All of it.** This is Vietnam research in the open: the numbers, the sources, the code that computes from them, and the places where the numbers are still a range. You are invited to make it better, which means you are invited to find what is wrong with it.
+
+## The invitation
+
+- **Check a number.** Every figure here has a source named or a range admitted. If you know a better source, open an issue with the citation. A correction with a page number outranks any sentence in this repository.
+- **Transcribe a video.** Sources 4–8 in `sources/numbered_sources.md` are videos that nobody here has heard. Put a transcript in `sources/transcripts/N.md` and it becomes citable as `Source.N` in the code.
+- **Add a nation.** `index/projects/55-nations.html` lists twenty-seven. If yours is missing or wrong, the data is one JSON row.
+- **Break the model.** `index/projects/37-vietnam-war-room.html` fits a line to the provinces lost and misses the Fall of Saigon by a week. Fit a better one; the standard in project 38 says how.
+- **Add a ship.** `src/Ships.scala` and `src/Fleet.java` build fleets from `data_and_tech/yard.json`. A new hull is one row and one enum constant; the compiler will tell you every place it has to go.
+- **Argue with a page.** The workbook (project 60) folds its answers under its questions. If an answer is wrong, say so in an issue with the page number.
+
+Nothing here needs permission. Fork it, cite it, contradict it. Pull requests that change a number must name the source; pull requests that change a sentence must not change a number.
+
+
 The Vietnam War did not end on 30 April 1975. This repository holds the research project on what came after — the prisoners' return, the Agent Orange battle, the ordnance still in the ground — and, appended under `index/`, the session index from the Venus yard: 31 sessions and projects 32–63, every one with a page, a template and an idle game, including the war rooms this project was written against.
 
 ## Thesis
